@@ -37,8 +37,10 @@ $grid-gutter-height: $grid-gutter-width !default;
 }
 
 $special-widths: (
+    "16": "(100% / 6)",
     "33": "(100% / 3)",
     "66": "((100% / 3) * 2)",
+    "83": "((100% / 6) * 5)"
 );
 
 @function _griddle-get-width($width-str) {
