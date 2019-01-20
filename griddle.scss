@@ -37,10 +37,10 @@ $special-widths: (
 );
 
 @function _griddle-get-width($width-str) {
-    @if map-has-key($special-widths, "#{$width-str}") {
-        @return "calc#{map-get($special-widths, "#{$width-str}")}";
+    @if map-has-key($special-widths, inspect($width-str)) {
+        @return "#{map-get($special-widths, "#{$width-str}")}";
     } @else {
-        @return "calc(100% / #{100 / $width-str})";
+        @return "(100% / (#{100 / $width-str}))";
     }
 }
 
@@ -96,15 +96,73 @@ $special-widths: (
     }
 }
 
+// NOTE(happens): Parts taken from https://stackoverflow.com/a/42295154
+// and https://stackoverflow.com/a/46805472
+@function _griddle-split-row($str) {
+    // Make sure it's actually a string
+    $str: inspect($str);
+    $result: ();
+
+    // Consume the string and stop when it's gone
+    @while str-length($str) > 0 {
+        // We basically start "eating" spaces until we hit something
+        @while str-index($str, " ") == 1 {
+            $str: str-slice($str, 2);
+        }
+
+        // At this point we have something else, or the string is empty,
+        // so we want to append everything until the next space or stop
+        @if str-length($str) > 0 {
+            $next-space: str-index($str, " ");
+            @if $next-space == null {
+                // Append the rest and remove the rest of the string
+                $result: append($result, $str);
+                $str: "";
+            } @else {
+                $value: str-slice($str, 1, $next-space - 1);
+                $result: append($result, $value);
+
+                // Remove what we just added from the string
+                $str: str-slice($str, $next-space + 1);
+            }
+        }
+    }
+
+    @return $result;
+}
+
 @mixin grid-template-with-gutter-width($gutter, $rows...) {
     display: flex;
     flex-wrap: wrap;
 
-    $counter: 1;
+    $counter: 0;
 
     @for $i from 1 through length($rows) {
-        > *:nth-child(#{$i}) {
-            content: "child number #{$i}";
+        $row: unquote(nth($rows, $i));
+        $cols: _griddle-split-row($row);
+
+        @for $j from 1 through length($cols) {
+            $col: nth($cols, $j);
+            $counter: $counter + 1;
+
+            > *:nth-child(#{$counter}) {
+                $width: _griddle-get-width($col);
+                margin: 0 calc(#{$gutter} / 2) #{$gutter} calc(#{$gutter} / 2);
+
+                @if $j == 1 {
+                    flex: 0 0 calc(#{$width} - (#{$gutter} / 2));
+                    margin-left: 0;
+                } @else if  $j == length($cols) {
+                    flex: 0 0 calc(#{$width} - (#{$gutter} / 2));
+                    margin-right: 0;
+                } @else {
+                    flex: 0 0 calc(#{$width} - #{$gutter});
+                }
+
+                @if $i == length($rows) {
+                    margin-bottom: 0;
+                }
+            }
         }
     }
 }

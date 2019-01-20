@@ -1,43 +1,41 @@
 @import "../griddle";
 
+$bar-height: 3rem;
+
+@mixin bars($color) {
+    > div {
+        height: $bar-height;
+        background-color: $color;
+        border-radius: 4px;
+    }
+}
+
+.waffle-grid { @include bars(#3b5ae5); }
+.class-grid { @include bars(#d86a20); }
+.template-grid { @include bars(#c42ef2); }
+
 html, body {
-    width: 100%;
+    width: 50%;
     min-height: 100vh;
-    margin: 0;
+    margin: 4rem auto;
     padding: 0;
 }
 
 .waffle-grid {
     @include grid-waffle($cols: 4);
     margin-bottom: 4rem;
-    
-    > div {
-        height: 80px;
-        background-color: #3b5ae5;
-        border-radius: 4px;
-    }
 }
 
 .class-grid {
     @include grid-classes(10, 20, 30, 33, 40, 50);
     margin-bottom: 4rem;
-
-    > div {
-        height: 80px;
-        background-color: #d86a20;
-        border-radius: 4px;
-    }
 }
 
 .template-grid {
     @include grid-template(
-        "1 2 3",
-        "4 5 6"
+        "  50    50  ",
+        "33   33   33",
+        "10 20  40 30",
+        " 33   66    "
     );
-
-    > div {
-        height: 80px;
-        background-color: #c42ef2;
-        border-radius: 4px;
-    }
 }
