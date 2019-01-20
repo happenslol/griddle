@@ -147,7 +147,7 @@ $special-widths: (
     $counter: 0;
 
     @for $i from 1 through length($rows) {
-        $row: unquote(nth($rows, $i));
+        $row: unquote(inspect(nth($rows, $i)));
         $cols: _griddle-split-row($row);
 
         @for $j from 1 through length($cols) {

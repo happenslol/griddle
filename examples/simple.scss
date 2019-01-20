@@ -34,9 +34,9 @@ body > div:not(:last-child) {
 
 .template-grid {
     @include grid-template(
-        "  50    50  ",
-        "33   33   33",
-        "10 20  40 30",
-        " 33   66    "
+          50    50  ,
+        33   33   33,
+        10 20  40 30,
+          33   66
     );
 }
