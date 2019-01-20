@@ -62,7 +62,6 @@ $special-widths: (
 
     &.first {
         margin-left: 0;
-        margin-bottom: $gutter-height;
         flex: 0 0 calc(#{$width} - (#{$gutter-width} / 2));
     }
 
@@ -75,9 +74,14 @@ $special-widths: (
 @mixin grid-classes-with-gutter-dimensions($gutter-width, $gutter-height, $widths...) {
     display: flex;
     flex-wrap: wrap;
+    align-items: flex-end;
 
     > * {
         margin: 0 ($gutter-width / 2);
+    }
+
+    > * + .first {
+        margin-top: $gutter-height;
     }
 
     @each $width-str in $widths {
