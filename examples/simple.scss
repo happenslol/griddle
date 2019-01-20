@@ -21,14 +21,16 @@ html, body {
     padding: 0;
 }
 
-.waffle-grid {
-    @include grid-waffle($cols: 4);
+body > div:not(:last-child) {
     margin-bottom: 4rem;
 }
 
-.class-grid {
+.waffle-grid {
+    @include grid-waffle($cols: 4);
+}
+
+.classes-grid {
     @include grid-classes(10, 20, 30, 33, 40, 50);
-    margin-bottom: 4rem;
 }
 
 .template-grid {
