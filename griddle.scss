@@ -1,0 +1,118 @@
+$gutter-width: 1em !default;
+
+@mixin grid-waffle($cols, $gutter: $gutter-width) {
+    display: flex;
+    flex-wrap: wrap;
+
+    > * {
+        flex: 0 0 calc((100% / #{$cols}) - #{$gutter});
+        margin: 0 calc(#{$gutter} / 2) #{$gutter} calc(#{$gutter} / 2);
+
+        &:nth-child(#{$cols}n + 1) {
+            margin-left: 0;
+            flex: 0 0 calc((100% / #{$cols}) - (#{$gutter} / 2));
+        }
+
+        &:nth-child(#{$cols}n + #{$cols}) {
+            margin-right: 0;
+            flex: 0 0 calc((100% / #{$cols}) - (#{$gutter} / 2));
+        }
+
+        &:nth-last-child(#{$cols}) ~ * {
+            margin-bottom: 0;
+        }
+    }
+}
+
+@function _griddle-escape-num($num) {
+    $first: str-slice("#{$num}", 1, 1);
+    $second: str-slice("#{$num}", 2, 2);
+
+    @return "\\3#{$first} #{$second}";
+}
+
+$special-widths: (
+    "33": "(100% / 3)",
+    "66": "((100% / 3) * 2)",
+);
+
+@function _griddle-get-width($width-str) {
+    @if map-has-key($special-widths, "#{$width-str}") {
+        @return "calc#{map-get($special-widths, "#{$width-str}")}";
+    } @else {
+        @return "calc(100% / #{100 / $width-str})";
+    }
+}
+
+@mixin _griddle-escape-class($num) {
+    $escaped: _griddle-escape-num($num);
+    
+    > .#{$escaped} {
+        @content;
+    }
+}
+
+@mixin _griddle-first-last($gutter, $width-str) {
+    $width: _griddle-get-width($width-str);
+
+    &.first {
+        margin-left: 0;
+        margin-bottom: $gutter;
+        flex: 0 0 calc(#{$width} - (#{$gutter} / 2));
+    }
+
+    &.last {
+        margin-right: 0;
+        flex: 0 0 calc(#{$width} - (#{$gutter} / 2));
+    }
+}
+
+@mixin grid-classes-with-gutter-width($gutter, $widths...) {
+    display: flex;
+    flex-wrap: wrap;
+
+    > * {
+        margin: 0 ($gutter / 2);
+    }
+
+    @each $width-str in $widths {
+        @if $width-str == "100" {
+            .\31 00 {
+                flex: 0 0 calc(10% - #{$gutter});
+                @include _griddle-first-last($gutter, 10%);
+            }
+
+        } @else if $width-str == "0" {
+            @warn "griddle: 0 is an invalid width!";
+
+        } @else {
+            @include _griddle-escape-class($width-str) {
+                $width: _griddle-get-width($width-str);
+                flex: 0 0 calc(#{$width} - #{$gutter});
+
+                @include _griddle-first-last($gutter, $width-str);
+            }
+        }
+    }
+}
+
+@mixin grid-template-with-gutter-width($gutter, $rows...) {
+    display: flex;
+    flex-wrap: wrap;
+
+    $counter: 1;
+
+    @for $i from 1 through length($rows) {
+        > *:nth-child(#{$i}) {
+            content: "child number #{$i}";
+        }
+    }
+}
+
+@mixin grid-classes($widths...) {
+    @include grid-classes-with-gutter-width($gutter-width, $widths...);
+}
+
+@mixin grid-template($rows...) {
+    @include grid-template-with-gutter-width($gutter-width, $rows...);
+}
