@@ -1,0 +1,97 @@
+html, body {
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+.waffle-grid {
+    display: flex;
+    flex-wrap: wrap;
+
+    margin-bottom: 4rem;
+    
+    > div {
+        flex: 0 0 calc((100% / 4) - 1em);
+        margin: 0 .5em .5em .5em;
+
+        &:nth-child(4n + 1) {
+            margin-left: 0;
+            flex: 0 0 calc((100% / 4) - .5em);
+        }
+
+        &:nth-child(4n + 4) {
+            margin-right: 0;
+            flex: 0 0 calc((100% / 4) - .5em);
+        }
+
+        &:nth-last-child(4) ~ * {
+            margin-bottom: 0;
+        }
+
+        height: 80px;
+        background-color: #3b5ae5;
+        border-radius: 4px;
+    }
+}
+
+@mixin _griddle-first-last($gutter, $width) {
+    &.first {
+        margin-left: 0;
+        flex: 0 0 calc(#{$width} - (#{$gutter} / 2));
+    }
+
+    &.last {
+        margin-right: 0;
+        flex: 0 0 calc(#{$width} - (#{$gutter} / 2));
+    }
+}
+
+.var-grid {
+    $gutter: 1em;
+
+    display: flex;
+    flex-wrap: wrap;
+
+    > .\31 0 {
+        flex: 0 0 calc(10% - #{$gutter});
+        @include _griddle-first-last($gutter, 10%);
+    }
+
+    > .\32 0 {
+        flex: 0 0 calc(20% - #{$gutter});
+        @include _griddle-first-last($gutter, 20%);
+    }
+
+    > .\33 0 {
+        flex: 0 0 calc(30% - #{$gutter});
+        @include _griddle-first-last($gutter, 30%);
+    }
+
+    > .\33 3 {
+        flex: 0 0 calc((100% / 3) - #{$gutter});
+        @include _griddle-first-last($gutter, "(100% / 3)");
+    }
+
+    > .\34 0 {
+        flex: 0 0 calc(40% - #{$gutter});
+        @include _griddle-first-last($gutter, 40%);
+    }
+
+    > .\35 0 {
+        flex: 0 0 calc(50% - #{$gutter});
+        @include _griddle-first-last($gutter, 50%);
+    }
+
+    > div {
+        margin: 0 ($gutter / 2) ($gutter / 2) ($gutter / 2);
+
+        &.last-row ~ * {
+            margin-bottom: 0;
+        }
+
+        height: 80px;
+        background-color: #d86a20;
+        border-radius: 4px;
+    }
+}
