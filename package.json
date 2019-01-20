@@ -1,14 +1,16 @@
 {
-  "name": "griddle",
-  "version": "0.1.0",
-  "description": "SCSS flex-grid helper mixins",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Hilmar Wiegand <me@hwgnd.de>",
-  "license": "MIT",
-  "devDependencies": {
-    "sass": "^1.16.1"
-  }
+    "name": "griddle",
+    "version": "0.2.0",
+    "description": "SCSS flex-grid helper mixins",
+    "main": "griddle.scss",
+    "scripts": {
+        "dev": "parcel ./examples/simple.html",
+        "examples": "npm run dev"
+    },
+    "author": "Hilmar Wiegand <me@hwgnd.de>",
+    "license": "MIT",
+    "devDependencies": {
+        "parcel-bundler": "^1.11.0",
+        "sass": "^1.16.1"
+    }
 }

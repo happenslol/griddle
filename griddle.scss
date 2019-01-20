@@ -1,21 +1,26 @@
-$gutter-width: 1em !default;
+$grid-gutter-width: 1em !default;
+$grid-gutter-height: $grid-gutter-width !default;
 
-@mixin grid-waffle($cols, $gutter: $gutter-width) {
+@mixin grid-waffle(
+    $cols,
+    $gutter-width: $grid-gutter-width,
+    $gutter-height: $grid-gutter-height,
+) {
     display: flex;
     flex-wrap: wrap;
 
     > * {
-        flex: 0 0 calc((100% / #{$cols}) - #{$gutter});
-        margin: 0 calc(#{$gutter} / 2) #{$gutter} calc(#{$gutter} / 2);
+        flex: 0 0 calc((100% / #{$cols}) - #{$gutter-width});
+        margin: 0 calc(#{$gutter-width} / 2) #{$gutter-height} calc(#{$gutter-width} / 2);
 
         &:nth-child(#{$cols}n + 1) {
             margin-left: 0;
-            flex: 0 0 calc((100% / #{$cols}) - (#{$gutter} / 2));
+            flex: 0 0 calc((100% / #{$cols}) - (#{$gutter-width} / 2));
         }
 
         &:nth-child(#{$cols}n + #{$cols}) {
             margin-right: 0;
-            flex: 0 0 calc((100% / #{$cols}) - (#{$gutter} / 2));
+            flex: 0 0 calc((100% / #{$cols}) - (#{$gutter-width} / 2));
         }
 
         &:nth-last-child(#{$cols}) ~ * {
@@ -52,34 +57,34 @@ $special-widths: (
     }
 }
 
-@mixin _griddle-first-last($gutter, $width-str) {
+@mixin _griddle-first-last($gutter-width, $gutter-height, $width-str) {
     $width: _griddle-get-width($width-str);
 
     &.first {
         margin-left: 0;
-        margin-bottom: $gutter;
-        flex: 0 0 calc(#{$width} - (#{$gutter} / 2));
+        margin-bottom: $gutter-height;
+        flex: 0 0 calc(#{$width} - (#{$gutter-width} / 2));
     }
 
     &.last {
         margin-right: 0;
-        flex: 0 0 calc(#{$width} - (#{$gutter} / 2));
+        flex: 0 0 calc(#{$width} - (#{$gutter-width} / 2));
     }
 }
 
-@mixin grid-classes-with-gutter-width($gutter, $widths...) {
+@mixin grid-classes-with-gutter-dimensions($gutter-width, $gutter-height, $widths...) {
     display: flex;
     flex-wrap: wrap;
 
     > * {
-        margin: 0 ($gutter / 2);
+        margin: 0 ($gutter-width / 2);
     }
 
     @each $width-str in $widths {
         @if $width-str == "100" {
             .\31 00 {
-                flex: 0 0 calc(10% - #{$gutter});
-                @include _griddle-first-last($gutter, 10%);
+                flex: 0 0 calc(100% - #{$gutter-width});
+                @include _griddle-first-last($gutter-width, $gutter-height, 100%);
             }
 
         } @else if $width-str == "0" {
@@ -88,9 +93,9 @@ $special-widths: (
         } @else {
             @include _griddle-escape-class($width-str) {
                 $width: _griddle-get-width($width-str);
-                flex: 0 0 calc(#{$width} - #{$gutter});
+                flex: 0 0 calc(#{$width} - #{$gutter-width});
 
-                @include _griddle-first-last($gutter, $width-str);
+                @include _griddle-first-last($gutter-width, $gutter-height, $width-str);
             }
         }
     }
@@ -131,7 +136,7 @@ $special-widths: (
     @return $result;
 }
 
-@mixin grid-template-with-gutter-width($gutter, $rows...) {
+@mixin grid-template-with-gutter-dimensions($gutter-width, $gutter-height, $rows...) {
     display: flex;
     flex-wrap: wrap;
 
@@ -147,16 +152,16 @@ $special-widths: (
 
             > *:nth-child(#{$counter}) {
                 $width: _griddle-get-width($col);
-                margin: 0 calc(#{$gutter} / 2) #{$gutter} calc(#{$gutter} / 2);
+                margin: 0 calc(#{$gutter-width} / 2) #{$gutter-height} calc(#{$gutter-width} / 2);
 
                 @if $j == 1 {
-                    flex: 0 0 calc(#{$width} - (#{$gutter} / 2));
+                    flex: 0 0 calc(#{$width} - (#{$gutter-width} / 2));
                     margin-left: 0;
                 } @else if  $j == length($cols) {
-                    flex: 0 0 calc(#{$width} - (#{$gutter} / 2));
+                    flex: 0 0 calc(#{$width} - (#{$gutter-width} / 2));
                     margin-right: 0;
                 } @else {
-                    flex: 0 0 calc(#{$width} - #{$gutter});
+                    flex: 0 0 calc(#{$width} - #{$gutter-width});
                 }
 
                 @if $i == length($rows) {
@@ -168,9 +173,17 @@ $special-widths: (
 }
 
 @mixin grid-classes($widths...) {
-    @include grid-classes-with-gutter-width($gutter-width, $widths...);
+    @include grid-classes-with-gutter-dimensions(
+        $grid-gutter-width,
+        $grid-gutter-height,
+        $widths...
+    );
 }
 
 @mixin grid-template($rows...) {
-    @include grid-template-with-gutter-width($gutter-width, $rows...);
+    @include grid-template-with-gutter-dimensions(
+        $grid-gutter-width,
+        $grid-gutter-height,
+        $rows...
+    );
 }

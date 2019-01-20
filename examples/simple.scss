@@ -11,12 +11,11 @@ $bar-height: 3rem;
 }
 
 .waffle-grid { @include bars(#3b5ae5); }
-.class-grid { @include bars(#d86a20); }
+.classes-grid { @include bars(#d86a20); }
 .template-grid { @include bars(#c42ef2); }
 
 html, body {
     width: 50%;
-    min-height: 100vh;
     margin: 4rem auto;
     padding: 0;
 }
