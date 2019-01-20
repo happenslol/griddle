@@ -13,11 +13,12 @@ html, body {
     
     > div {
         flex: 0 0 calc((100% / 4) - 1em);
-        margin: 0 .5em .5em .5em;
+        margin: 0 .5em;
 
         &:nth-child(4n + 1) {
             margin-left: 0;
             flex: 0 0 calc((100% / 4) - .5em);
+            margin-bottom: 1em;
         }
 
         &:nth-child(4n + 4) {
@@ -38,6 +39,7 @@ html, body {
 @mixin _griddle-first-last($gutter, $width) {
     &.first {
         margin-left: 0;
+        margin-bottom: $gutter;
         flex: 0 0 calc(#{$width} - (#{$gutter} / 2));
     }
 
@@ -52,6 +54,8 @@ html, body {
 
     display: flex;
     flex-wrap: wrap;
+
+    margin-bottom: 4rem;
 
     > .\31 0 {
         flex: 0 0 calc(10% - #{$gutter});
@@ -84,14 +88,36 @@ html, body {
     }
 
     > div {
-        margin: 0 ($gutter / 2) ($gutter / 2) ($gutter / 2);
-
-        &.last-row ~ * {
-            margin-bottom: 0;
-        }
+        margin: 0 ($gutter / 2);
 
         height: 80px;
         background-color: #d86a20;
+        border-radius: 4px;
+    }
+}
+
+@mixin grid-template($gutter: "1em", $rows...) {
+    $counter: 1;
+
+    @for $i from 1 through length($rows) {
+        > *:nth-child() {}
+    }
+}
+
+.template-grid {
+    display: flex;
+    flex-wrap: wrap;
+
+    @include grid-template(
+        $gutter: "1.5em",
+        "  50    50  ",
+        "33   33   33",
+        "10 20  40 30",
+    );
+
+    > div {
+        height: 80px;
+        background-color: #c42ef2;
         border-radius: 4px;
     }
 }
