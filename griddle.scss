@@ -1,7 +1,7 @@
 $grid-gutter-width: 1em !default;
 $grid-gutter-height: $grid-gutter-width !default;
 
-$grid-force-denom: null;
+$grid-force-denom: null !default;
 
 @mixin grid-waffle(
     $cols,
