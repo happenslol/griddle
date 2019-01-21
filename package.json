@@ -1,7 +1,7 @@
 {
-    "name": "griddle",
+    "name": "griddle-sass",
     "version": "1.0.0",
-    "description": "SCSS flex-grid helper mixins",
+    "description": "Sass flex-grid helper mixins",
     "main": "griddle.scss",
     "scripts": {
         "dev": "parcel ./examples/simple.html",
