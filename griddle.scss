@@ -1,11 +1,11 @@
 $griddle-gutter-width: 1em !default;
-$griddle-gutter-height: $grid-gutter-width !default;
+$griddle-gutter-height: $griddle-gutter-width !default;
 $griddle-force-denom: null !default;
 
 @mixin grid-waffle(
     $cols,
-    $gutter-width: $grid-gutter-width,
-    $gutter-height: $grid-gutter-height,
+    $gutter-width: $griddle-gutter-width,
+    $gutter-height: $griddle-gutter-height,
 ) {
     display: flex;
     flex-wrap: wrap;
@@ -77,8 +77,8 @@ $griddle-force-denom: null !default;
     $num: str-slice($frac, 1, ($sl-index - 1));
     $denom: str-slice($frac, ($sl-index + 1));
 
-    @if $grid-force-denom != null and $denom != $grid-force-denom {
-        @error "Not an allowed fraction: `#{$frac}`, only `n/#{$grid-force-denom}` is allowed";
+    @if $griddle-force-denom != null and $denom != $griddle-force-denom {
+        @error "Not an allowed fraction: `#{$frac}`, only `n/#{$griddle-force-denom}` is allowed";
     }
 
     @return 1;
@@ -174,16 +174,16 @@ $griddle-force-denom: null !default;
 
 @mixin grid-classes($widths...) {
     @include grid-classes-with-gutter-dimensions(
-        $grid-gutter-width,
-        $grid-gutter-height,
+        $griddle-gutter-width,
+        $griddle-gutter-height,
         $widths...
     );
 }
 
 @mixin grid-template($rows...) {
     @include grid-template-with-gutter-dimensions(
-        $grid-gutter-width,
-        $grid-gutter-height,
+        $griddle-gutter-width,
+        $griddle-gutter-height,
         $rows...
     );
 }
