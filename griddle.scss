@@ -1,6 +1,8 @@
 $grid-gutter-width: 1em !default;
 $grid-gutter-height: $grid-gutter-width !default;
 
+$grid-force-denom: null;
+
 @mixin grid-waffle(
     $cols,
     $gutter-width: $grid-gutter-width,
@@ -8,6 +10,7 @@ $grid-gutter-height: $grid-gutter-width !default;
 ) {
     display: flex;
     flex-wrap: wrap;
+    align-items: flex-end;
 
     > * {
         flex: 0 0 calc((100% / #{$cols}) - #{$gutter-width});
@@ -15,12 +18,10 @@ $grid-gutter-height: $grid-gutter-width !default;
 
         &:nth-child(#{$cols}n + 1) {
             margin-left: 0;
-            flex: 0 0 calc((100% / #{$cols}) - (#{$gutter-width} / 2));
         }
 
         &:nth-child(#{$cols}n + #{$cols}) {
             margin-right: 0;
-            flex: 0 0 calc((100% / #{$cols}) - (#{$gutter-width} / 2));
         }
 
         &:nth-last-child(#{$cols}) ~ * {
@@ -36,41 +37,52 @@ $grid-gutter-height: $grid-gutter-width !default;
     @return "\\3#{$first} #{$second}";
 }
 
-$special-widths: (
-    "16": "(100% / 6)",
-    "33": "(100% / 3)",
-    "66": "((100% / 3) * 2)",
-    "83": "((100% / 6) * 5)"
-);
+@mixin _griddle-escape-class($frac) {
+    $frac: unquote($frac);
+    $v: _griddle-check-valid-frac($frac);
 
-@function _griddle-get-width($width-str) {
-    @if map-has-key($special-widths, inspect($width-str)) {
-        @return "#{map-get($special-widths, "#{$width-str}")}";
-    } @else {
-        @return "(100% / (#{100 / $width-str}))";
-    }
-}
+    $sl-index: str-index($frac, "/");
+    $num: str-slice($frac, 1, ($sl-index - 1));
+    $denom: str-slice($frac, ($sl-index + 1));
 
-@mixin _griddle-escape-class($num) {
-    $escaped: _griddle-escape-num($num);
+    $escaped-num: _griddle-escape-num($num);
     
-    > .#{$escaped} {
+    > .#{$escaped-num}\/#{$denom} {
         @content;
     }
 }
 
-@mixin _griddle-first-last($gutter-width, $gutter-height, $width-str) {
-    $width: _griddle-get-width($width-str);
-
+@mixin _griddle-first-last() {
     &.first {
         margin-left: 0;
-        flex: 0 0 calc(#{$width} - (#{$gutter-width} / 2));
     }
 
     &.last {
         margin-right: 0;
-        flex: 0 0 calc(#{$width} - (#{$gutter-width} / 2));
     }
+}
+
+@function _griddle-get-width($frac, $gutter-width) {
+    $frac: unquote($frac);
+    $v: _griddle-check-valid-frac($frac);
+    @return calc(100% * (#{$frac}) - (#{$gutter-width} - #{$gutter-width} * (#{$frac})));
+}
+
+@function _griddle-check-valid-frac($frac) {
+    $sl-index: str-index($frac, "/");
+
+    @if $sl-index == null or $sl-index == 1 or $sl-index == str-length($frac) {
+        @error "Not a valid fraction: `#{$frac}`";
+    }
+
+    $num: str-slice($frac, 1, ($sl-index - 1));
+    $denom: str-slice($frac, ($sl-index + 1));
+
+    @if $grid-force-denom != null and $denom != $grid-force-denom {
+        @error "Not an allowed fraction: `#{$frac}`, only `n/#{$grid-force-denom}` is allowed";
+    }
+
+    @return 1;
 }
 
 @mixin grid-classes-with-gutter-dimensions($gutter-width, $gutter-height, $widths...) {
@@ -87,22 +99,10 @@ $special-widths: (
     }
 
     @each $width-str in $widths {
-        @if $width-str == "100" {
-            .\31 00 {
-                flex: 0 0 calc(100% - #{$gutter-width});
-                @include _griddle-first-last($gutter-width, $gutter-height, 100%);
-            }
-
-        } @else if $width-str == "0" {
-            @warn "griddle: 0 is an invalid width!";
-
-        } @else {
-            @include _griddle-escape-class($width-str) {
-                $width: _griddle-get-width($width-str);
-                flex: 0 0 calc(#{$width} - #{$gutter-width});
-
-                @include _griddle-first-last($gutter-width, $gutter-height, $width-str);
-            }
+        @include _griddle-escape-class($width-str) {
+            $width: _griddle-get-width($width-str, $gutter-width);
+            flex: 0 0 $width;
+            @include _griddle-first-last();
         }
     }
 }
@@ -110,8 +110,6 @@ $special-widths: (
 // NOTE(happens): Parts taken from https://stackoverflow.com/a/42295154
 // and https://stackoverflow.com/a/46805472
 @function _griddle-split-row($str) {
-    // Make sure it's actually a string
-    $str: inspect($str);
     $result: ();
 
     // Consume the string and stop when it's gone
@@ -149,7 +147,7 @@ $special-widths: (
     $counter: 0;
 
     @for $i from 1 through length($rows) {
-        $row: unquote(inspect(nth($rows, $i)));
+        $row: nth($rows, $i);
         $cols: _griddle-split-row($row);
 
         @for $j from 1 through length($cols) {
@@ -157,17 +155,14 @@ $special-widths: (
             $counter: $counter + 1;
 
             > *:nth-child(#{$counter}) {
-                $width: _griddle-get-width($col);
                 margin: 0 calc(#{$gutter-width} / 2) #{$gutter-height} calc(#{$gutter-width} / 2);
+                $width: _griddle-get-width($col, $gutter-width);
+                flex: 0 0 $width;
 
                 @if $j == 1 {
-                    flex: 0 0 calc(#{$width} - (#{$gutter-width} / 2));
                     margin-left: 0;
                 } @else if  $j == length($cols) {
-                    flex: 0 0 calc(#{$width} - (#{$gutter-width} / 2));
                     margin-right: 0;
-                } @else {
-                    flex: 0 0 calc(#{$width} - #{$gutter-width});
                 }
 
                 @if $i == length($rows) {
