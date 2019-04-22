@@ -1,6 +1,6 @@
 {
     "name": "griddle-sass",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "Sass flex-grid helper mixins",
     "main": "griddle.scss",
     "scripts": {
@@ -9,6 +9,15 @@
     },
     "author": "Hilmar Wiegand <me@hwgnd.de>",
     "license": "MIT",
+    "keywords": [
+        "grid",
+        "flex",
+        "sass",
+        "scss",
+        "mixin",
+        "helper",
+        "style"
+    ],
     "devDependencies": {
         "parcel-bundler": "^1.11.0",
         "sass": "^1.16.1"
