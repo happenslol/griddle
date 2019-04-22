@@ -2,8 +2,8 @@
 
 SASS Mixins for creating flex grids
 
-[![npm](https://img.shields.io/npm/v/griddle-sass.svg)](https://www.npmjs.com/package/dragtime)
-[![Downloads per month](https://img.shields.io/npm/dm/griddle-sass.svg)](https://www.npmjs.com/package/dragtime)
+[![npm](https://img.shields.io/npm/v/griddle-sass.svg)](https://www.npmjs.com/package/griddle-sass)
+[![Downloads per month](https://img.shields.io/npm/dm/griddle-sass.svg)](https://www.npmjs.com/package/griddle-sass)
 
 ![quote logo](https://raw.githubusercontent.com/happenslol/griddle/master/assets/logo.png?raw=true)
 
